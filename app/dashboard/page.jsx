@@ -2,10 +2,22 @@
 
 import React, { useEffect, useState } from "react";
 import { UserButton } from "@clerk/nextjs";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { FaChartLine, FaFileAlt, FaPlus, FaRegCalendarAlt } from "react-icons/fa";
+import {
+  FaChartLine,
+  FaFileAlt,
+  FaPlus,
+  FaRegCalendarAlt,
+} from "react-icons/fa";
 import CreateNewProject from "@/components/CreateNewProject";
 
 const data = [
@@ -16,48 +28,62 @@ const data = [
 ];
 
 const DashboardPage = () => {
-  const [pdfCount, setPdfCount] = useState(0); // ✅ move inside function
+  const [pdfCount, setPdfCount] = useState(0);
 
   useEffect(() => {
     fetch("/pdfs/index.json")
-      .then(res => res.json())
-      .then(data => setPdfCount(data.length || 0))
-      .catch(err => console.error("Failed to fetch PDF count:", err));
+      .then((res) => res.json())
+      .then((data) => setPdfCount(data.length || 0))
+      .catch((err) => console.error("Failed to fetch PDF count:", err));
   }, []);
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-[#0f021c] to-[#1f0c3a] text-white">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-[#0f021c] to-[#1f0c3a] text-white">
       {/* Sidebar */}
-      <aside className="w-64 bg-white/5 backdrop-blur-md shadow-xl p-6 flex flex-col">
-        <h2 className="text-2xl font-bold text-pink-500 mb-8">Micropen</h2>
-        <nav className="flex flex-col gap-4">
-          <Link href="/dashboard" className="hover:text-pink-400 flex items-center gap-2">
+      <aside className="w-full md:w-64 bg-white/5 backdrop-blur-md shadow-xl p-4 md:p-6 flex flex-col md:min-h-screen">
+        <h2 className="text-2xl font-bold text-pink-500 mb-4 md:mb-8">
+          Micropen
+        </h2>
+        <nav className="flex flex-col gap-3 text-sm">
+          <Link
+            href="/dashboard"
+            className="hover:text-pink-400 flex items-center gap-2"
+          >
             <FaChartLine /> Dashboard
           </Link>
-          <Link href="/dashboard/my-works" className="hover:text-pink-400 flex items-center gap-2">
+          <Link
+            href="/dashboard/my-works"
+            className="hover:text-pink-400 flex items-center gap-2"
+          >
             <FaFileAlt /> My Works
           </Link>
-          <Link href="/dashboard/create" className="hover:text-pink-400 flex items-center gap-2">
+          <Link
+            href="/dashboard/create"
+            className="hover:text-pink-400 flex items-center gap-2"
+          >
             <FaPlus /> Create New
           </Link>
-          <Link href="/dashboard/calendar" className="hover:text-pink-400 flex items-center gap-2">
+          <Link
+            href="/dashboard/calendar"
+            className="hover:text-pink-400 flex items-center gap-2"
+          >
             <FaRegCalendarAlt /> Calendar
           </Link>
         </nav>
-        <div className="mt-auto">
+        <div className="mt-6 md:mt-auto">
           <UserButton />
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Dashboard Overview</h1>
+      <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+          <h1 className="text-2xl sm:text-3xl font-bold">Dashboard Overview</h1>
           <CreateNewProject />
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
           {[
             { title: "PDFs Created", value: pdfCount },
             { title: "Languages Used", value: "3" },
@@ -67,18 +93,23 @@ const DashboardPage = () => {
             <motion.div
               key={idx}
               whileHover={{ scale: 1.05 }}
-              className="bg-white/5 p-6 rounded-xl shadow-lg backdrop-blur-md"
+              className="bg-white/5 p-4 sm:p-6 rounded-xl shadow-lg backdrop-blur-md"
             >
-              <h3 className="text-lg text-pink-400 font-semibold mb-2">{item.title}</h3>
-              <p className="text-2xl font-bold">{item.value}</p>
+              <h3 className="text-base sm:text-lg text-pink-400 font-semibold mb-1 sm:mb-2">
+                {item.title}
+              </h3>
+              <p className="text-xl sm:text-2xl font-bold">{item.value}</p>
             </motion.div>
           ))}
         </div>
 
         {/* Charts */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-white/5 p-6 rounded-xl shadow-lg backdrop-blur-md">
-            <h3 className="text-lg font-semibold mb-4">Monthly Activity</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Bar Chart */}
+          <div className="bg-white/5 p-4 sm:p-6 rounded-xl shadow-lg backdrop-blur-md">
+            <h3 className="text-base sm:text-lg font-semibold mb-3">
+              Monthly Activity
+            </h3>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={data}>
                 <XAxis dataKey="name" stroke="#fff" />
@@ -89,9 +120,12 @@ const DashboardPage = () => {
             </ResponsiveContainer>
           </div>
 
-          <div className="bg-white/5 p-6 rounded-xl shadow-lg backdrop-blur-md">
-            <h3 className="text-lg font-semibold mb-4">Client Stats</h3>
-            <ul className="space-y-3">
+          {/* Stats List */}
+          <div className="bg-white/5 p-4 sm:p-6 rounded-xl shadow-lg backdrop-blur-md">
+            <h3 className="text-base sm:text-lg font-semibold mb-3">
+              Client Stats
+            </h3>
+            <ul className="space-y-3 text-sm">
               <li className="flex justify-between border-b border-white/10 pb-2">
                 <span>Chrome Users</span>
                 <span>70%</span>
